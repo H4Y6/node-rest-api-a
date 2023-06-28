@@ -13,4 +13,17 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await contacts.getContactById(id);
+    if (!result) {
+      return res.status(404).json("Not found");
+    }
+    res.json(result);
+  } catch (error) {
+    res.json(error.message);
+  }
+});
+
 module.exports = router;
