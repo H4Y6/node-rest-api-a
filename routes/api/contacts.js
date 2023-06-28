@@ -26,4 +26,13 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+router.post("/", (req, res, next) => {
+  try {
+    const result = contacts.addContact(req.body);
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
