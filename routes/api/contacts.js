@@ -48,4 +48,30 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.put("/:id", async (req, res, next) => {
+  try {
+    const { error } = contactsAddSchema.validate(req.body);
+    if (error) {
+      res.status(400).json({ message: error.message });
+    }
+    const { id } = req.params;
+    const result = await contacts.updateContact(id, req.body);
+    if (!result) {
+      return res.status(404).json({ message: "Not found" });
+    }
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/:id", async (req, res, next) => {
+  const { id } = req.params;
+  const result = await contacts.removeContact(id);
+  if (!result) {
+    res.status(404).json({ message: "Not found" });
+  }
+  res.json({ message: "Contact`s deleted" });
+});
+
 module.exports = router;
