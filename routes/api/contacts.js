@@ -1,6 +1,15 @@
 const express = require("express");
+const Joi = require("joi");
 
 const contacts = require("../../models/contacts");
+
+const emailRegexp = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
+
+const contactsAddSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().pattern(emailRegexp).required(),
+  phone: Joi.string().required(),
+});
 
 const router = express.Router();
 
@@ -28,6 +37,10 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
+    const { error } = contactsAddSchema.validate(req.body);
+    if (error) {
+      res.status(400).json(error.message);
+    }
     const result = await contacts.addContact(req.body);
     res.status(201).json(result);
   } catch (error) {
